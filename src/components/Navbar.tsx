@@ -56,20 +56,7 @@ export function Navbar({
     >
       {/* 1. INSTITUTIONAL TOP BAR (DESKTOP) */}
       <div className="hidden lg:block border-b border-slate-800/60 bg-slate-950/90 text-slate-400 text-[11px] py-1.5">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-          {/* Left info */}
-          <div className="flex items-center gap-4">
-            <span className="flex items-center gap-1.5 text-slate-400">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-              <strong className="text-slate-300 font-medium">Atendimento Nacional</strong> • Curitiba/PR para todo o Brasil
-            </span>
-            <span className="text-slate-700">|</span>
-            <span className="flex items-center gap-1.5 text-slate-400">
-              <Clock className="w-3.5 h-3.5 text-sky-400" />
-              <span>{COMPANY_INFO.hours}</span>
-            </span>
-          </div>
-
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-end">
           {/* Right contacts & socials */}
           <div className="flex items-center gap-4">
             <a 
