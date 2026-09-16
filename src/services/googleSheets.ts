@@ -10,6 +10,19 @@ export interface LeadSubmission {
 
 export const DEFAULT_SPREADSHEET_ID = '1nC5YzPBCzT-weT5lIrhI_wl2UoEgv0vpmBvxaIWoVUE';
 export const DEFAULT_SHEET_TAB_NAME = 'site';
+export const DEFAULT_WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbwIUcGUVkBuMERLa6q2FZ-Jes7FuNfSnj4-zef6tvIy0yizk4vR7zagESB6PucNPJm2aA/exec';
+
+/**
+ * Obtém a URL ativa do Webhook do Google Apps Script
+ */
+export function getActiveWebhookUrl(customUrl?: string): string {
+  if (customUrl && customUrl.trim()) return customUrl.trim();
+  if (typeof window !== 'undefined') {
+    const fromStorage = localStorage.getItem('servotech_sheets_webhook_url');
+    if (fromStorage && fromStorage.trim()) return fromStorage.trim();
+  }
+  return DEFAULT_WEBHOOK_URL;
+}
 
 /**
  * Adiciona uma nova linha com os dados do lead na planilha indicada
@@ -87,11 +100,11 @@ export async function recordLeadToSheet(
 }
 
 export async function sendLeadViaWebhook(
-  webhookUrl: string,
-  lead: LeadSubmission
+  webhookUrl?: string,
+  lead?: LeadSubmission
 ): Promise<boolean> {
-  const cleanUrl = webhookUrl.trim();
-  if (!cleanUrl) return false;
+  const cleanUrl = getActiveWebhookUrl(webhookUrl);
+  if (!cleanUrl || !lead) return false;
 
   await fetch(cleanUrl, {
     method: 'POST',

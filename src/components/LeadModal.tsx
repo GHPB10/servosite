@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, CheckCircle2, ArrowRight, ShieldCheck, Sparkles, Building2, User, Mail, Phone, FileSpreadsheet, ExternalLink } from 'lucide-react';
 import { COMPANY_INFO } from '../data/content';
-import { recordLeadToSheet, sendLeadViaWebhook, DEFAULT_SPREADSHEET_ID } from '../services/googleSheets';
+import { recordLeadToSheet, sendLeadViaWebhook, getActiveWebhookUrl, DEFAULT_SPREADSHEET_ID } from '../services/googleSheets';
 import { getAccessToken } from '../services/googleAuth';
 
 interface LeadModalProps {
@@ -56,7 +56,7 @@ export function LeadModal({
     };
 
     try {
-      const activeWebhook = webhookUrl || localStorage.getItem('servotech_sheets_webhook_url');
+      const activeWebhook = getActiveWebhookUrl(webhookUrl);
       if (activeWebhook) {
         await sendLeadViaWebhook(activeWebhook, leadData);
         setSheetSaved(true);

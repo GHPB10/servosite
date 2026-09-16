@@ -9,6 +9,7 @@ import { FloatingEditBar } from './components/FloatingEditBar';
 import { BannerItem, INITIAL_BANNERS } from './types/banner';
 import { BrandingConfig, loadBrandingConfig, saveBrandingConfig, applyFavicon } from './types/branding';
 import { ContentProvider, useContent } from './context/ContentContext';
+import { DEFAULT_WEBHOOK_URL } from './services/googleSheets';
 
 // Section Pages
 import { HomeSection } from './sections/HomeSection';
@@ -63,7 +64,7 @@ function AppContent() {
     return localStorage.getItem('servotech_sheet_tab') || 'site';
   });
   const [webhookUrl, setWebhookUrl] = useState<string>(() => {
-    return localStorage.getItem('servotech_sheets_webhook_url') || '';
+    return localStorage.getItem('servotech_sheets_webhook_url') || DEFAULT_WEBHOOK_URL;
   });
 
   const handleOpenConsultation = (topic?: string) => {

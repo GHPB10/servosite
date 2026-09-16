@@ -37,6 +37,7 @@ import { BannerItem, INITIAL_BANNERS } from '../types/banner';
 import { 
   APPS_SCRIPT_TEMPLATE, 
   sendLeadViaWebhook, 
+  getActiveWebhookUrl,
   DEFAULT_SPREADSHEET_ID, 
   DEFAULT_SHEET_TAB_NAME 
 } from '../services/googleSheets';
@@ -116,7 +117,7 @@ export function AdminConfigModal({
   }, [branding, isOpen]);
 
   useEffect(() => {
-    setLocalWebhook(webhookUrl || localStorage.getItem('servotech_sheets_webhook_url') || '');
+    setLocalWebhook(getActiveWebhookUrl(webhookUrl));
     setLocalSpreadsheetId(spreadsheetId || DEFAULT_SPREADSHEET_ID);
     setLocalSheetTab(sheetTabName || DEFAULT_SHEET_TAB_NAME);
   }, [webhookUrl, spreadsheetId, sheetTabName, isOpen]);

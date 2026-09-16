@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { COMPANY_INFO } from '../data/content';
 import { FaqSection } from '../components/FaqSection';
-import { recordLeadToSheet, sendLeadViaWebhook, DEFAULT_SPREADSHEET_ID } from '../services/googleSheets';
+import { recordLeadToSheet, sendLeadViaWebhook, getActiveWebhookUrl, DEFAULT_SPREADSHEET_ID } from '../services/googleSheets';
 import { getAccessToken } from '../services/googleAuth';
 import { EditableText } from '../components/EditableText';
 import { 
@@ -61,7 +61,7 @@ export function ContatoSection({
     };
 
     try {
-      const activeWebhook = webhookUrl || localStorage.getItem('servotech_sheets_webhook_url');
+      const activeWebhook = getActiveWebhookUrl(webhookUrl);
       if (activeWebhook) {
         await sendLeadViaWebhook(activeWebhook, leadData);
         setSheetSaved(true);

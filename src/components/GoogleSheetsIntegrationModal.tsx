@@ -17,6 +17,8 @@ import {
 import { 
   APPS_SCRIPT_TEMPLATE, 
   sendLeadViaWebhook, 
+  getActiveWebhookUrl,
+  DEFAULT_WEBHOOK_URL,
   DEFAULT_SPREADSHEET_ID, 
   DEFAULT_SHEET_TAB_NAME 
 } from '../services/googleSheets';
@@ -47,7 +49,7 @@ export function GoogleSheetsIntegrationModal({
   const [saveSuccess, setSaveSuccess] = useState(false);
 
   useEffect(() => {
-    setWebhookInput(webhookUrl || localStorage.getItem('servotech_sheets_webhook_url') || '');
+    setWebhookInput(getActiveWebhookUrl(webhookUrl));
     setCustomIdInput(spreadsheetId || DEFAULT_SPREADSHEET_ID);
     setCustomTabInput(sheetTabName || DEFAULT_SHEET_TAB_NAME);
   }, [webhookUrl, spreadsheetId, sheetTabName, isOpen]);
