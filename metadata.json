@@ -1,0 +1,6 @@
+{
+  "name": "Servo Tech — BPO Financeiro & Softwares de Gestão",
+  "description": "Soluções completas de BPO Financeiro, Odvix ERP e Servo CRM. Previsibilidade de caixa, automação de rotinas e aceleração comercial para a sua empresa.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
