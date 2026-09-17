@@ -1,18 +1,23 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { PageId } from '../types';
 import { BrandingConfig } from '../types/branding';
-import { NAV_ITEMS, COMPANY_INFO } from '../data/content';
+import { COMPANY_INFO } from '../data/content';
 import { 
   Menu, 
   X, 
   ArrowRight,
   Headphones,
   Mail,
-  Clock,
   Instagram,
   Facebook,
   Linkedin,
-  MessageSquare
+  MessageSquare,
+  ChevronDown,
+  Database,
+  Users,
+  DollarSign,
+  Sparkles,
+  Check
 } from 'lucide-react';
 
 interface NavbarProps {
@@ -22,6 +27,48 @@ interface NavbarProps {
   branding?: BrandingConfig;
 }
 
+const SOLUTIONS_ITEMS: {
+  id: PageId;
+  label: string;
+  tag: string;
+  description: string;
+  icon: typeof Database;
+  badge: string;
+  iconBg: string;
+  iconColor: string;
+}[] = [
+  {
+    id: 'erp',
+    label: 'Odvix ERP',
+    tag: 'Sistema de Gestão Integrada',
+    description: 'ERP completo para emissão fiscal, estoque, compras e financeiro.',
+    icon: Database,
+    badge: 'ERP',
+    iconBg: 'bg-emerald-500/10 border-emerald-500/25 text-emerald-400 group-hover:bg-emerald-500 group-hover:text-slate-950',
+    iconColor: 'text-emerald-400',
+  },
+  {
+    id: 'crm',
+    label: 'Servo CRM',
+    tag: 'Funil Comercial & Vendas',
+    description: 'Gestão visual de leads, oportunidades e histórico de negociações.',
+    icon: Users,
+    badge: 'CRM',
+    iconBg: 'bg-blue-500/10 border-blue-500/25 text-blue-400 group-hover:bg-blue-500 group-hover:text-slate-950',
+    iconColor: 'text-blue-400',
+  },
+  {
+    id: 'bpo',
+    label: 'BPO Financeiro',
+    tag: 'Terceirização Financeira',
+    description: 'Conciliação diária, contas a pagar/receber e DRE em tempo real.',
+    icon: DollarSign,
+    badge: 'Gestão',
+    iconBg: 'bg-sky-500/10 border-sky-500/25 text-sky-400 group-hover:bg-sky-500 group-hover:text-slate-950',
+    iconColor: 'text-sky-400',
+  },
+];
+
 export function Navbar({ 
   currentPage, 
   onNavigate, 
@@ -30,6 +77,9 @@ export function Navbar({
 }: NavbarProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [solutionsDropdownOpen, setSolutionsDropdownOpen] = useState(false);
+  const [mobileSolutionsOpen, setMobileSolutionsOpen] = useState(true);
+  const dropdownTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -42,8 +92,26 @@ export function Navbar({
   const handleNavClick = (page: PageId) => {
     onNavigate(page);
     setMobileMenuOpen(false);
+    setSolutionsDropdownOpen(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  const handleMouseEnterSolutions = () => {
+    if (dropdownTimeoutRef.current) {
+      clearTimeout(dropdownTimeoutRef.current);
+      dropdownTimeoutRef.current = null;
+    }
+    setSolutionsDropdownOpen(true);
+  };
+
+  const handleMouseLeaveSolutions = () => {
+    dropdownTimeoutRef.current = setTimeout(() => {
+      setSolutionsDropdownOpen(false);
+    }, 150);
+  };
+
+  const isSolutionsActive = ['erp', 'crm', 'bpo'].includes(currentPage);
+  const activeSolution = SOLUTIONS_ITEMS.find(s => s.id === currentPage);
 
   return (
     <header
@@ -159,25 +227,163 @@ export function Navbar({
             )}
           </button>
 
-          {/* Symmetrical Center: Navigation Links */}
+          {/* Symmetrical Center: Navigation Links with Grouped Solutions Dropdown */}
           <nav className="hidden lg:flex items-center gap-1 bg-slate-900/80 border border-slate-800 p-1 rounded-xl shadow-inner">
-            {NAV_ITEMS.map((item) => {
-              const isActive = currentPage === item.id;
-              return (
-                <button
-                  key={item.id}
-                  id={`nav-link-${item.id}`}
-                  onClick={() => handleNavClick(item.id)}
-                  className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all duration-150 cursor-pointer ${
-                    isActive
-                      ? 'bg-sky-500 text-slate-950 font-extrabold shadow-sm shadow-sky-500/30'
-                      : 'text-slate-300 hover:text-white hover:bg-slate-800'
-                  }`}
-                >
-                  {item.label}
-                </button>
-              );
-            })}
+            {/* Início */}
+            <button
+              id="nav-link-home"
+              onClick={() => handleNavClick('home')}
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all duration-150 cursor-pointer ${
+                currentPage === 'home'
+                  ? 'bg-sky-500 text-slate-950 font-extrabold shadow-sm shadow-sky-500/30'
+                  : 'text-slate-300 hover:text-white hover:bg-slate-800'
+              }`}
+            >
+              Início
+            </button>
+
+            {/* Soluções Dropdown Menu */}
+            <div 
+              className="relative"
+              onMouseEnter={handleMouseEnterSolutions}
+              onMouseLeave={handleMouseLeaveSolutions}
+            >
+              <button
+                id="nav-link-solutions-trigger"
+                onClick={() => setSolutionsDropdownOpen(prev => !prev)}
+                className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all duration-150 cursor-pointer flex items-center gap-1.5 ${
+                  isSolutionsActive
+                    ? 'bg-sky-500 text-slate-950 font-extrabold shadow-sm shadow-sky-500/30'
+                    : solutionsDropdownOpen
+                    ? 'bg-slate-800 text-white'
+                    : 'text-slate-300 hover:text-white hover:bg-slate-800'
+                }`}
+                aria-expanded={solutionsDropdownOpen}
+                aria-haspopup="true"
+              >
+                <span>Soluções</span>
+                {isSolutionsActive && activeSolution && (
+                  <span className={`text-[10px] px-1.5 py-0.2 rounded font-bold uppercase tracking-wider ${
+                    isSolutionsActive ? 'bg-slate-950/20 text-slate-950' : 'bg-sky-500/20 text-sky-400'
+                  }`}>
+                    {activeSolution.badge}
+                  </span>
+                )}
+                <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${solutionsDropdownOpen ? 'rotate-180' : ''}`} />
+              </button>
+
+              {/* Dropdown Floating Panel */}
+              <div 
+                className={`absolute top-full left-0 pt-2 w-80 sm:w-[340px] transition-all duration-200 z-50 ${
+                  solutionsDropdownOpen 
+                    ? 'opacity-100 translate-y-0 pointer-events-auto visible' 
+                    : 'opacity-0 -translate-y-2 pointer-events-none invisible'
+                }`}
+              >
+                <div className="bg-slate-900/98 backdrop-blur-xl border border-slate-700/90 rounded-2xl p-2.5 shadow-2xl shadow-slate-950/90 ring-1 ring-white/10">
+                  <div className="px-3 py-1.5 mb-1.5 flex items-center justify-between border-b border-slate-800/80">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                      <Sparkles className="w-3 h-3 text-sky-400" />
+                      Ecossistema de Soluções
+                    </span>
+                    <span className="text-[10px] text-slate-500 font-medium">3 Soluções</span>
+                  </div>
+
+                  <div className="space-y-1">
+                    {SOLUTIONS_ITEMS.map((item) => {
+                      const isItemActive = currentPage === item.id;
+                      const IconComponent = item.icon;
+                      return (
+                        <button
+                          key={item.id}
+                          id={`nav-solution-${item.id}`}
+                          onClick={() => handleNavClick(item.id)}
+                          className={`w-full group flex items-start gap-3 p-2.5 rounded-xl transition-all duration-150 text-left cursor-pointer ${
+                            isItemActive
+                              ? 'bg-sky-500/15 border border-sky-500/30 text-white'
+                              : 'hover:bg-slate-800/90 border border-transparent text-slate-300 hover:text-white'
+                          }`}
+                        >
+                          <div className={`w-9 h-9 rounded-xl border flex items-center justify-center shrink-0 transition-all duration-150 ${item.iconBg}`}>
+                            <IconComponent className="w-4 h-4" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center justify-between gap-1">
+                              <span className={`text-xs font-bold transition-colors ${
+                                isItemActive ? 'text-sky-400' : 'text-white group-hover:text-sky-400'
+                              }`}>
+                                {item.label}
+                              </span>
+                              {isItemActive && (
+                                <span className="flex items-center gap-1 text-[10px] text-sky-400 font-bold bg-sky-500/10 px-1.5 py-0.5 rounded border border-sky-500/20">
+                                  <Check className="w-3 h-3" />
+                                  Ativo
+                                </span>
+                              )}
+                            </div>
+                            <p className="text-[11px] text-slate-400 leading-snug mt-0.5 line-clamp-2">
+                              {item.description}
+                            </p>
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  <div className="mt-2 pt-2 border-t border-slate-800/80 px-2 flex items-center justify-between">
+                    <button
+                      onClick={() => {
+                        setSolutionsDropdownOpen(false);
+                        onOpenConsultation('Comparativo de Soluções');
+                      }}
+                      className="text-[11px] text-sky-400 hover:text-sky-300 font-semibold flex items-center gap-1 transition-colors"
+                    >
+                      <span>Precisa de ajuda para escolher?</span>
+                      <ArrowRight className="w-3 h-3" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Parceria */}
+            <button
+              id="nav-link-parceria"
+              onClick={() => handleNavClick('parceria')}
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all duration-150 cursor-pointer ${
+                currentPage === 'parceria'
+                  ? 'bg-sky-500 text-slate-950 font-extrabold shadow-sm shadow-sky-500/30'
+                  : 'text-slate-300 hover:text-white hover:bg-slate-800'
+              }`}
+            >
+              Parceria
+            </button>
+
+            {/* Sobre Nós */}
+            <button
+              id="nav-link-sobre"
+              onClick={() => handleNavClick('sobre')}
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all duration-150 cursor-pointer ${
+                currentPage === 'sobre'
+                  ? 'bg-sky-500 text-slate-950 font-extrabold shadow-sm shadow-sky-500/30'
+                  : 'text-slate-300 hover:text-white hover:bg-slate-800'
+              }`}
+            >
+              Sobre Nós
+            </button>
+
+            {/* Contato */}
+            <button
+              id="nav-link-contato"
+              onClick={() => handleNavClick('contato')}
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all duration-150 cursor-pointer ${
+                currentPage === 'contato'
+                  ? 'bg-sky-500 text-slate-950 font-extrabold shadow-sm shadow-sky-500/30'
+                  : 'text-slate-300 hover:text-white hover:bg-slate-800'
+              }`}
+            >
+              Contato
+            </button>
           </nav>
 
           {/* Symmetrical Right: Action CTA & Phone Link */}
@@ -227,26 +433,117 @@ export function Navbar({
 
       {/* Mobile menu dropdown */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-slate-950 border-b border-slate-800 px-4 pt-3 pb-6 space-y-3 shadow-2xl animate-in fade-in duration-200">
+        <div className="lg:hidden bg-slate-950 border-b border-slate-800 px-4 pt-3 pb-6 space-y-3 shadow-2xl animate-in fade-in duration-200 max-h-[85vh] overflow-y-auto">
           <div className="flex flex-col space-y-1">
-            {NAV_ITEMS.map((item) => {
-              const isActive = currentPage === item.id;
-              return (
-                <button
-                  key={item.id}
-                  id={`mobile-nav-${item.id}`}
-                  onClick={() => handleNavClick(item.id)}
-                  className={`flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold transition-colors text-left ${
-                    isActive
-                      ? 'bg-sky-500 text-slate-950 font-bold'
-                      : 'text-slate-200 hover:bg-slate-900'
-                  }`}
-                >
-                  <span>{item.label}</span>
-                  <ArrowRight className="w-4 h-4 opacity-50" />
-                </button>
-              );
-            })}
+            {/* Início */}
+            <button
+              id="mobile-nav-home"
+              onClick={() => handleNavClick('home')}
+              className={`flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold transition-colors text-left ${
+                currentPage === 'home'
+                  ? 'bg-sky-500 text-slate-950 font-bold'
+                  : 'text-slate-200 hover:bg-slate-900'
+              }`}
+            >
+              <span>Início</span>
+              <ArrowRight className="w-4 h-4 opacity-50" />
+            </button>
+
+            {/* Soluções Accordion on Mobile */}
+            <div className="bg-slate-900/60 rounded-xl border border-slate-800/80 overflow-hidden">
+              <button
+                onClick={() => setMobileSolutionsOpen(!mobileSolutionsOpen)}
+                className="w-full flex items-center justify-between px-4 py-3 text-sm font-semibold text-slate-200 hover:bg-slate-800/50 transition-colors"
+              >
+                <div className="flex items-center gap-2">
+                  <span className={isSolutionsActive ? 'text-sky-400 font-bold' : 'text-slate-200'}>
+                    Soluções
+                  </span>
+                  {isSolutionsActive && (
+                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-sky-500/20 text-sky-400 font-bold">
+                      {activeSolution?.badge}
+                    </span>
+                  )}
+                </div>
+                <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform ${mobileSolutionsOpen ? 'rotate-180' : ''}`} />
+              </button>
+
+              {mobileSolutionsOpen && (
+                <div className="px-2 pb-2 space-y-1">
+                  {SOLUTIONS_ITEMS.map((item) => {
+                    const isItemActive = currentPage === item.id;
+                    const IconComp = item.icon;
+                    return (
+                      <button
+                        key={item.id}
+                        id={`mobile-solution-${item.id}`}
+                        onClick={() => handleNavClick(item.id)}
+                        className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left text-xs transition-colors ${
+                          isItemActive
+                            ? 'bg-sky-500 text-slate-950 font-bold'
+                            : 'text-slate-300 hover:bg-slate-800'
+                        }`}
+                      >
+                        <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${
+                          isItemActive ? 'bg-slate-950/20 text-slate-950' : item.iconBg
+                        }`}>
+                          <IconComp className="w-3.5 h-3.5" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <span className="font-bold block">{item.label}</span>
+                          <span className={`text-[10px] block truncate ${isItemActive ? 'text-slate-900/80' : 'text-slate-400'}`}>
+                            {item.tag}
+                          </span>
+                        </div>
+                        {isItemActive && <Check className="w-3.5 h-3.5 shrink-0" />}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            {/* Parceria */}
+            <button
+              id="mobile-nav-parceria"
+              onClick={() => handleNavClick('parceria')}
+              className={`flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold transition-colors text-left ${
+                currentPage === 'parceria'
+                  ? 'bg-sky-500 text-slate-950 font-bold'
+                  : 'text-slate-200 hover:bg-slate-900'
+              }`}
+            >
+              <span>Parceria</span>
+              <ArrowRight className="w-4 h-4 opacity-50" />
+            </button>
+
+            {/* Sobre Nós */}
+            <button
+              id="mobile-nav-sobre"
+              onClick={() => handleNavClick('sobre')}
+              className={`flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold transition-colors text-left ${
+                currentPage === 'sobre'
+                  ? 'bg-sky-500 text-slate-950 font-bold'
+                  : 'text-slate-200 hover:bg-slate-900'
+              }`}
+            >
+              <span>Sobre Nós</span>
+              <ArrowRight className="w-4 h-4 opacity-50" />
+            </button>
+
+            {/* Contato */}
+            <button
+              id="mobile-nav-contato"
+              onClick={() => handleNavClick('contato')}
+              className={`flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold transition-colors text-left ${
+                currentPage === 'contato'
+                  ? 'bg-sky-500 text-slate-950 font-bold'
+                  : 'text-slate-200 hover:bg-slate-900'
+              }`}
+            >
+              <span>Contato</span>
+              <ArrowRight className="w-4 h-4 opacity-50" />
+            </button>
           </div>
 
           {/* Contact and social bar on mobile */}
@@ -311,4 +608,3 @@ export function Navbar({
     </header>
   );
 }
-
