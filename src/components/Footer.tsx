@@ -47,10 +47,14 @@ export function Footer({
                 <img
                   src={branding.logoImageUrl}
                   alt={branding.brandNamePrefix ? `${branding.brandNamePrefix} ${branding.brandNameSuffix || ''}` : 'Logo'}
-                  className="h-11 sm:h-13 max-h-16 max-w-[220px] object-contain"
+                  style={{
+                    height: `${(branding.logoHeightFooter || 60) * (branding.logoScale || 1.4)}px`,
+                    maxHeight: '110px'
+                  }}
+                  className="w-auto max-w-[280px] sm:max-w-[340px] object-contain"
                 />
               ) : (
-                <ServoTechLogo className="h-11 sm:h-13 w-auto max-w-[220px] sm:max-w-[250px]" />
+                <ServoTechLogo className="h-12 sm:h-14 w-auto max-w-[240px] sm:max-w-[280px]" />
               )}
             </div>
 

@@ -30,14 +30,22 @@ export function ServoTechLogo({
 
   const activeHeightClass = className || sizeClasses[size];
 
-  // Tenta carregar o arquivo vetorial estático ou imagem rasterizada
+  // Tenta carregar o arquivo rasterizado oficial enviado (6.png ou servo-logo.png)
   if (!imageError) {
     return (
       <img
-        src="/servo-logo.svg"
+        src="/6.png"
         alt={alt}
         className={`${activeHeightClass} object-contain transition-transform duration-200 select-none`}
-        onError={() => setImageError(true)}
+        onError={(e) => {
+          // Se 6.png falhar, tenta servo-logo.png antes do fallback
+          const target = e.currentTarget;
+          if (target.src.endsWith('/6.png')) {
+            target.src = '/servo-logo.png';
+          } else {
+            setImageError(true);
+          }
+        }}
       />
     );
   }

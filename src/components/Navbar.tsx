@@ -185,21 +185,25 @@ export function Navbar({
 
       {/* 2. PRIMARY NAVIGATION BAR */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 sm:h-18">
+        <div className="flex items-center justify-between min-h-[4rem] sm:min-h-[4.5rem] py-1">
           {/* Symmetrical Left: Brand Logo */}
           <button
             id="brand-logo-btn"
             onClick={() => handleNavClick('home')}
-            className="flex items-center text-left group cursor-pointer focus:outline-none shrink-0 py-1"
+            className="flex items-center text-left group cursor-pointer focus:outline-none shrink-0 py-0.5"
           >
             {branding?.logoType === 'image' && branding?.logoImageUrl ? (
               <img 
                 src={branding.logoImageUrl} 
                 alt={branding.brandNamePrefix ? `${branding.brandNamePrefix} ${branding.brandNameSuffix || ''}` : 'Logo'} 
-                className="h-10 sm:h-12 max-h-14 max-w-[220px] object-contain group-hover:scale-105 transition-transform shrink-0" 
+                style={{
+                  height: `${(branding.logoHeightNavbar || 54) * (branding.logoScale || 1.4)}px`,
+                  maxHeight: '88px'
+                }}
+                className="w-auto max-w-[280px] sm:max-w-[340px] object-contain group-hover:scale-105 transition-all duration-200 shrink-0" 
               />
             ) : (
-              <ServoTechLogo className="h-9 sm:h-11 md:h-12 w-auto max-w-[210px] sm:max-w-[240px] group-hover:opacity-95 group-hover:scale-105 transition-all" />
+              <ServoTechLogo className="h-10 sm:h-12 md:h-14 w-auto max-w-[240px] sm:max-w-[280px] group-hover:opacity-95 group-hover:scale-105 transition-all" />
             )}
           </button>
 

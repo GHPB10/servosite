@@ -31,7 +31,10 @@ import {
   Upload,
   Globe,
   Layers,
-  Type
+  Type,
+  Maximize2,
+  Sliders,
+  ZoomIn
 } from 'lucide-react';
 import { BannerItem, INITIAL_BANNERS } from '../types/banner';
 import { useContent } from '../context/ContentContext';
@@ -126,7 +129,13 @@ export function AdminConfigModal({
 
   useEffect(() => {
     if (branding) {
-      setLocalBranding(branding);
+      setLocalBranding({
+        ...DEFAULT_BRANDING,
+        ...branding,
+        logoScale: branding.logoScale ?? DEFAULT_BRANDING.logoScale ?? 1.4,
+        logoHeightNavbar: branding.logoHeightNavbar ?? DEFAULT_BRANDING.logoHeightNavbar ?? 54,
+        logoHeightFooter: branding.logoHeightFooter ?? DEFAULT_BRANDING.logoHeightFooter ?? 60
+      });
     }
   }, [branding, isOpen]);
 
@@ -1068,22 +1077,126 @@ export function AdminConfigModal({
                     </div>
                   </div>
 
+                  {/* Escala e Tamanho da Logomarca (Controle de Zoom e Altura) */}
+                  <div className="bg-slate-900/70 border border-slate-800 rounded-xl p-4 space-y-4">
+                    <div className="flex items-center justify-between flex-wrap gap-2">
+                      <div className="flex items-center gap-2">
+                        <Sliders className="w-4 h-4 text-sky-400" />
+                        <span className="text-xs font-bold text-white uppercase tracking-wider">
+                          Escala e Proporção da Logomarca no Site
+                        </span>
+                      </div>
+                      <span className="text-[11px] font-mono font-bold text-sky-400 bg-sky-500/10 px-2.5 py-0.5 rounded-full border border-sky-500/20">
+                        {Math.round((localBranding.logoScale || 1.4) * 100)}% ({((localBranding.logoScale || 1.4)).toFixed(2)}x)
+                      </span>
+                    </div>
+
+                    {/* Slider de Escala Principal */}
+                    <div>
+                      <div className="flex items-center justify-between text-xs text-slate-300 mb-1.5">
+                        <span className="flex items-center gap-1.5 font-semibold">
+                          <ZoomIn className="w-3.5 h-3.5 text-sky-400" />
+                          Multiplicador de Escala Geral (Zoom):
+                        </span>
+                        <div className="flex items-center gap-1.5">
+                          {[1, 1.3, 1.5, 1.8, 2.2].map((preset) => (
+                            <button
+                              key={preset}
+                              type="button"
+                              onClick={() => setLocalBranding(prev => ({ ...prev, logoScale: preset }))}
+                              className={`text-[10px] px-2 py-0.5 rounded font-mono font-semibold transition-colors ${
+                                Math.abs((localBranding.logoScale || 1.4) - preset) < 0.05
+                                  ? 'bg-sky-500 text-slate-950'
+                                  : 'bg-slate-800 text-slate-400 hover:text-white'
+                              }`}
+                            >
+                              {preset}x
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                      <input
+                        type="range"
+                        min="0.7"
+                        max="2.5"
+                        step="0.05"
+                        value={localBranding.logoScale ?? 1.4}
+                        onChange={(e) => setLocalBranding(prev => ({ ...prev, logoScale: parseFloat(e.target.value) }))}
+                        className="w-full accent-sky-400 h-2 bg-slate-800 rounded-lg cursor-pointer"
+                      />
+                      <div className="flex justify-between text-[10px] text-slate-500 mt-1 font-mono">
+                        <span>Pequena (0.7x)</span>
+                        <span>Normal (1.0x)</span>
+                        <span>Destaque (1.5x)</span>
+                        <span>Muito Grande (2.5x)</span>
+                      </div>
+                    </div>
+
+                    {/* Alturas específicas do Topo e Rodapé */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-slate-800/60">
+                      <div>
+                        <label className="block text-[11px] font-bold text-slate-300 mb-1 flex items-center justify-between">
+                          <span className="flex items-center gap-1">
+                            <Maximize2 className="w-3 h-3 text-sky-400" />
+                            Altura Base no Topo (Navbar)
+                          </span>
+                          <span className="text-sky-400 font-mono text-[11px]">
+                            {localBranding.logoHeightNavbar || 54}px
+                          </span>
+                        </label>
+                        <input
+                          type="range"
+                          min="32"
+                          max="80"
+                          step="2"
+                          value={localBranding.logoHeightNavbar ?? 54}
+                          onChange={(e) => setLocalBranding(prev => ({ ...prev, logoHeightNavbar: parseInt(e.target.value, 10) }))}
+                          className="w-full accent-sky-400 h-1.5 bg-slate-800 rounded-lg cursor-pointer"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-bold text-slate-300 mb-1 flex items-center justify-between">
+                          <span className="flex items-center gap-1">
+                            <Maximize2 className="w-3 h-3 text-sky-400" />
+                            Altura Base no Rodapé (Footer)
+                          </span>
+                          <span className="text-sky-400 font-mono text-[11px]">
+                            {localBranding.logoHeightFooter || 60}px
+                          </span>
+                        </label>
+                        <input
+                          type="range"
+                          min="36"
+                          max="96"
+                          step="2"
+                          value={localBranding.logoHeightFooter ?? 60}
+                          onChange={(e) => setLocalBranding(prev => ({ ...prev, logoHeightFooter: parseInt(e.target.value, 10) }))}
+                          className="w-full accent-sky-400 h-1.5 bg-slate-800 rounded-lg cursor-pointer"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
                   {/* Previews da Logomarca */}
                   <div className="space-y-2 pt-2 border-t border-slate-800/80">
                     <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
-                      Pré-visualização da Logomarca no Site:
+                      Pré-visualização em Tempo Real (com a escala aplicada):
                     </span>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       {/* Navbar Preview */}
                       <div className="bg-slate-950 border border-slate-800 rounded-xl p-3">
                         <span className="text-[10px] text-slate-500 block mb-2 font-semibold">Cabeçalho (Navbar):</span>
-                        <div className="h-12 bg-slate-900/90 border border-slate-800 rounded-lg px-3 flex items-center justify-between">
+                        <div className="min-h-14 bg-slate-900/90 border border-slate-800 rounded-lg px-3 py-2 flex items-center justify-between overflow-hidden">
                           <div className="flex items-center gap-2.5">
                             {localBranding.logoType === 'image' && localBranding.logoImageUrl ? (
                               <img 
                                 src={localBranding.logoImageUrl} 
                                 alt="Logo" 
-                                className="h-8 max-w-[140px] object-contain"
+                                style={{
+                                  height: `${Math.min(76, (localBranding.logoHeightNavbar || 54) * (localBranding.logoScale || 1.4) * 0.75)}px`
+                                }}
+                                className="w-auto max-w-[200px] object-contain"
                               />
                             ) : (
                               <>
@@ -1115,13 +1228,16 @@ export function AdminConfigModal({
                       {/* Footer Preview */}
                       <div className="bg-slate-950 border border-slate-800 rounded-xl p-3">
                         <span className="text-[10px] text-slate-500 block mb-2 font-semibold">Rodapé (Footer):</span>
-                        <div className="h-12 bg-slate-900/90 border border-slate-800 rounded-lg px-3 flex items-center">
+                        <div className="min-h-14 bg-slate-900/90 border border-slate-800 rounded-lg px-3 py-2 flex items-center overflow-hidden">
                           <div className="flex items-center gap-2.5">
                             {localBranding.logoType === 'image' && localBranding.logoImageUrl ? (
                               <img 
                                 src={localBranding.logoImageUrl} 
                                 alt="Logo" 
-                                className="h-8 max-w-[140px] object-contain"
+                                style={{
+                                  height: `${Math.min(84, (localBranding.logoHeightFooter || 60) * (localBranding.logoScale || 1.4) * 0.75)}px`
+                                }}
+                                className="w-auto max-w-[200px] object-contain"
                               />
                             ) : (
                               <>

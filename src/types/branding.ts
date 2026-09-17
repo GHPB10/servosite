@@ -1,8 +1,12 @@
 import { SERVO_TECH_FAVICON_DATA_URI } from '../components/ServoTechLogoIcon';
+import defaultBrandingJson from '../data/branding.json';
 
 export interface BrandingConfig {
   logoType: 'icon' | 'image';
   logoImageUrl: string;
+  logoScale?: number; // Escala multiplicadora (ex: 1, 1.25, 1.5, 1.8, 2.2)
+  logoHeightNavbar?: number; // Altura em pixels no topo (ex: 48, 56, 64, 80)
+  logoHeightFooter?: number; // Altura em pixels no rodapé (ex: 52, 64, 76, 96)
   brandNamePrefix: string;
   brandNameSuffix: string;
   brandSubtitle: string;
@@ -12,12 +16,16 @@ export interface BrandingConfig {
 export const DEFAULT_FAVICON_SVG = SERVO_TECH_FAVICON_DATA_URI;
 
 export const DEFAULT_BRANDING: BrandingConfig = {
-  logoType: 'icon',
-  logoImageUrl: '',
+  logoType: 'image',
+  logoImageUrl: '/6.png',
+  logoScale: 1.5,
+  logoHeightNavbar: 56,
+  logoHeightFooter: 64,
   brandNamePrefix: 'SERVO',
   brandNameSuffix: 'TECH',
   brandSubtitle: 'Soluções em Tecnologia',
-  faviconUrl: DEFAULT_FAVICON_SVG
+  faviconUrl: DEFAULT_FAVICON_SVG,
+  ...(defaultBrandingJson as Partial<BrandingConfig>)
 };
 
 export const BRANDING_STORAGE_KEY = 'servotech_branding_config';
@@ -30,7 +38,7 @@ export function loadBrandingConfig(): BrandingConfig {
       return {
         ...DEFAULT_BRANDING,
         ...parsed,
-        faviconUrl: parsed.faviconUrl || DEFAULT_FAVICON_SVG
+        faviconUrl: parsed.faviconUrl || DEFAULT_BRANDING.faviconUrl || DEFAULT_FAVICON_SVG
       };
     }
   } catch (err) {

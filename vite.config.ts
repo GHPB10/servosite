@@ -41,6 +41,19 @@ function saveContentPlugin(): Plugin {
                   JSON.stringify(data.branding, null, 2),
                   'utf-8'
                 );
+                // Se o usuário subiu uma imagem de logo em base64, grava direto no public/servo-logo.png
+                if (data.branding.logoImageUrl && data.branding.logoImageUrl.startsWith('data:image/')) {
+                  try {
+                    const matches = data.branding.logoImageUrl.match(/^data:image\/([a-zA-Z0-9+]+);base64,(.+)$/);
+                    if (matches && matches[2]) {
+                      const buffer = Buffer.from(matches[2], 'base64');
+                      fs.writeFileSync(path.resolve(__dirname, 'public/servo-logo.png'), buffer);
+                      fs.writeFileSync(path.resolve(__dirname, 'public/6.png'), buffer);
+                    }
+                  } catch (imgErr) {
+                    console.error('Erro ao salvar buffer do logo:', imgErr);
+                  }
+                }
               }
               res.writeHead(200, { 'Content-Type': 'application/json' });
               res.end(JSON.stringify({ success: true, message: 'Dados salvos diretamente no código fonte!' }));
