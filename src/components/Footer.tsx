@@ -80,10 +80,10 @@ export function Footer({
               )}
             </div>
 
-            <p className="text-xs text-slate-400 leading-relaxed max-w-sm">
+            <p className="text-xs text-slate-400 leading-relaxed max-w-sm empty:hidden">
               <EditableText
                 contentKey="footer_brand_desc"
-                defaultText="Especialistas em Soluções em Tecnologia: unimos a terceirização do departamento financeiro (BPO) a softwares inteligentes de gestão empresarial (Odvix ERP & Servo CRM). Geramos economia astronômica substituindo o alto custo de contratações CLT individuais por uma equipe multidisciplinar sênior."
+                defaultText=""
                 className="text-slate-400"
                 multiline
               />

@@ -72,7 +72,7 @@ export function HomeSection({
               <span className="w-2 h-2 rounded-full bg-sky-400 animate-pulse" />
               <EditableText
                 contentKey="home_hero_badge"
-                defaultText="Soluções em Tecnologia & BPO Financeiro"
+                defaultText="SOLUÇÕES EM TECNOLOGIA"
                 className="text-xs font-bold not-italic text-sky-300 tracking-wide uppercase"
               />
             </div>
@@ -81,13 +81,13 @@ export function HomeSection({
             <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-[1.15]">
               <EditableText
                 contentKey="home_hero_title_line1"
-                defaultText="BPO Financeiro Especializado & "
+                defaultText="O seu Écossistema Financeiro está aqui."
                 className="text-white"
               />
               {' '}
               <EditableText
                 contentKey="home_hero_title_highlight"
-                defaultText="Softwares de Gestão"
+                defaultText="BPO + Softwares + AI"
                 className="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 via-sky-300 to-blue-400"
               />
             </h1>
@@ -97,7 +97,7 @@ export function HomeSection({
               <EditableText
                 as="p"
                 contentKey="home_hero_subtitle"
-                defaultText="A Servo Tech assume a rotina operacional do seu financeiro (contas a pagar, receber e conciliação bancária) e fornece sistemas integrados de gestão (Odvix ERP e Servo CRM). Obtenha governança profissional e economize até 70% em relação aos custos de contratação CLT."
+                defaultText="A Servo Tech funciona como um ecossistema financeiro completo, unindo softwares de gestão avançados, BPO financeiro operacional e consultoria estratégica com base em tecnologia para impulsionar o seu negócio."
                 multiline
                 inline={false}
                 className="text-sm sm:text-base text-slate-300 leading-relaxed"
@@ -139,7 +139,7 @@ export function HomeSection({
                 <ShieldCheck className="w-4 h-4 text-sky-400 shrink-0" />
                 <EditableText
                   contentKey="home_hero_badge_guarantee1"
-                  defaultText="Você autoriza tudo no seu banco (100% seguro)"
+                  defaultText="Soluções totalmente homologadas."
                   className="text-slate-300"
                 />
               </span>

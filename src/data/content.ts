@@ -38,9 +38,9 @@ export const NAV_ITEMS: NavItem[] = [
 ];
 
 export const HERO_STATS: StatItem[] = [
-  { value: '+ R$ 300M', label: 'Volume Gerenciado', sublabel: 'Através de nossas soluções' },
-  { value: '+ 80%', label: 'De Economia', sublabel: 'Através da aplicação de nossas soluções' },
-  { value: '+ 1.000', label: 'Clientes Impactados', sublabel: 'Pelas nossas soluções' },
+  { value: '+R$ 300M', label: 'Volume Gerenciado', sublabel: 'Através de nossas soluções' },
+  { value: '+80%', label: 'De Economia', sublabel: 'Através da aplicação de nossas soluções' },
+  { value: '+1.000', label: 'Clientes Impactados', sublabel: 'Pelas nossas soluções' },
   { value: '100%', label: 'Suporte Humanizado', sublabel: 'Dedicado para todas as soluções' },
 ];
 
