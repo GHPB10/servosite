@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <defs>
+    <linearGradient id="servoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#0284c7"/>
+      <stop offset="100%" stop-color="#1d4ed8"/>
+    </linearGradient>
+  </defs>
+  <rect width="1024" height="1024" rx="220" fill="url(#servoGrad)"/>
+  <g fill="#ffffff">
+    <polygon points="192,246 640,246 586,354 254,354" />
+    <polygon points="722,246 832,246 602,656 548,550" />
+    <polygon points="288,412 398,412 512,798" />
+  </g>
+</svg>

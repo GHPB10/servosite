@@ -3,49 +3,52 @@ import React from 'react';
 interface ServoTechLogoIconProps {
   className?: string;
   size?: number | string;
+  variant?: 'gradient' | 'plain' | 'white';
 }
 
-export function ServoTechLogoIcon({ className = "w-10 h-10", size }: ServoTechLogoIconProps) {
+/**
+ * Official Servo Tech Logo Symbol (3-stroke chiral delta monogram)
+ * Extracted with pixel-perfect geometric precision from official brand asset.
+ */
+export function ServoTechLogoIcon({ 
+  className = "w-10 h-10", 
+  size,
+  variant = 'gradient'
+}: ServoTechLogoIconProps) {
   const style = size ? { width: size, height: size } : undefined;
 
   return (
     <div 
-      className={`rounded-xl sm:rounded-2xl bg-gradient-to-br from-sky-400 via-sky-500 to-blue-600 flex items-center justify-center text-white shadow-lg shadow-sky-500/25 shrink-0 overflow-hidden ${className}`}
+      className={`rounded-xl sm:rounded-2xl flex items-center justify-center shrink-0 overflow-hidden ${
+        variant === 'gradient'
+          ? 'bg-gradient-to-br from-sky-400 via-sky-500 to-blue-600 text-white shadow-lg shadow-sky-500/25'
+          : variant === 'white'
+          ? 'bg-white text-slate-950 shadow-md'
+          : 'bg-transparent text-white'
+      } ${className}`}
       style={style}
     >
       <svg 
-        viewBox="0 0 64 64" 
-        fill="none" 
+        viewBox="0 0 1024 1024" 
+        fill="currentColor" 
         xmlns="http://www.w3.org/2000/svg" 
-        className="w-[68%] h-[68%]"
+        className="w-[74%] h-[74%]"
       >
-        {/* Top Horizontal Bar */}
-        <path 
-          d="M12 16H52" 
-          stroke="white" 
-          strokeWidth="6" 
-          strokeLinecap="round" 
-        />
-        {/* Outer Chevron / Shield Triangle */}
-        <path 
-          d="M16 26L32 48L48 26" 
-          stroke="white" 
-          strokeWidth="5.5" 
-          strokeLinecap="round" 
-          strokeLinejoin="round" 
-        />
-        {/* Inner Downward Triangle */}
-        <polygon 
-          points="24,26 40,26 32,38" 
-          fill="white" 
-        />
+        {/* Stroke 1: Top Horizontal Trapezoid */}
+        <polygon points="192,246 640,246 586,354 254,354" />
+        
+        {/* Stroke 2: Upper-Right Angled Diagonal Bar */}
+        <polygon points="722,246 832,246 602,656 548,550" />
+        
+        {/* Stroke 3: Lower-Left Angled Diagonal Arm pointing to Bottom Apex */}
+        <polygon points="288,412 398,412 512,798" />
       </svg>
     </div>
   );
 }
 
 export const SERVO_TECH_FAVICON_DATA_URI = `data:image/svg+xml,${encodeURIComponent(`
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
   <defs>
     <linearGradient id="servoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#38bdf8"/>
@@ -53,9 +56,11 @@ export const SERVO_TECH_FAVICON_DATA_URI = `data:image/svg+xml,${encodeURICompon
       <stop offset="100%" stop-color="#1d4ed8"/>
     </linearGradient>
   </defs>
-  <rect width="64" height="64" rx="16" fill="url(#servoGrad)"/>
-  <path d="M12 16H52" stroke="#ffffff" stroke-width="6" stroke-linecap="round"/>
-  <path d="M16 26L32 48L48 26" stroke="#ffffff" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>
-  <polygon points="24,26 40,26 32,38" fill="#ffffff"/>
+  <rect width="1024" height="1024" rx="220" fill="url(#servoGrad)"/>
+  <g fill="#ffffff">
+    <polygon points="192,246 640,246 586,354 254,354" />
+    <polygon points="722,246 832,246 602,656 548,550" />
+    <polygon points="288,412 398,412 512,798" />
+  </g>
 </svg>
 `)}`;
