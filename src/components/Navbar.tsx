@@ -3,6 +3,7 @@ import { PageId } from '../types';
 import { BrandingConfig } from '../types/branding';
 import { COMPANY_INFO } from '../data/content';
 import { ServoTechLogoIcon } from './ServoTechLogoIcon';
+import { ServoTechLogo } from './ServoTechLogo';
 import { 
   Menu, 
   X, 
@@ -185,44 +186,20 @@ export function Navbar({
       {/* 2. PRIMARY NAVIGATION BAR */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 sm:h-18">
-          {/* Symmetrical Left: Brand Logo & Tagline */}
+          {/* Symmetrical Left: Brand Logo */}
           <button
             id="brand-logo-btn"
             onClick={() => handleNavClick('home')}
-            className="flex items-center gap-3 text-left group cursor-pointer focus:outline-none shrink-0"
+            className="flex items-center text-left group cursor-pointer focus:outline-none shrink-0 py-1"
           >
             {branding?.logoType === 'image' && branding?.logoImageUrl ? (
-              <div className="flex items-center gap-3">
-                <img 
-                  src={branding.logoImageUrl} 
-                  alt={branding.brandNamePrefix ? `${branding.brandNamePrefix} ${branding.brandNameSuffix || ''}` : 'Logo'} 
-                  className="h-10 max-h-11 max-w-[200px] object-contain group-hover:scale-105 transition-transform shrink-0" 
-                />
-                {branding.brandSubtitle && (
-                  <span className="hidden sm:inline-block text-[11px] text-sky-400 font-semibold tracking-wide whitespace-nowrap">
-                    {branding.brandSubtitle}
-                  </span>
-                )}
-              </div>
+              <img 
+                src={branding.logoImageUrl} 
+                alt={branding.brandNamePrefix ? `${branding.brandNamePrefix} ${branding.brandNameSuffix || ''}` : 'Logo'} 
+                className="h-10 sm:h-12 max-h-14 max-w-[220px] object-contain group-hover:scale-105 transition-transform shrink-0" 
+              />
             ) : (
-              <>
-                {branding?.logoImageUrl ? (
-                  <div className="w-10 h-10 rounded-xl overflow-hidden shadow-md shadow-sky-500/25 group-hover:scale-105 transition-transform shrink-0">
-                    <img src={branding.logoImageUrl} alt="Ícone da Marca" className="w-full h-full object-cover" />
-                  </div>
-                ) : (
-                  <ServoTechLogoIcon className="w-10 h-10 group-hover:scale-105 transition-transform" />
-                )}
-                <div className="flex flex-col justify-center min-w-0">
-                  <span className="text-xl sm:text-2xl font-black tracking-tight text-white group-hover:text-sky-400 transition-colors leading-none whitespace-nowrap">
-                    {branding?.brandNamePrefix || 'SERVO'}
-                    <span className="text-sky-400">{branding?.brandNameSuffix !== undefined ? branding.brandNameSuffix : 'TECH'}</span>
-                  </span>
-                  <span className="text-[11px] text-sky-400 font-semibold tracking-wide whitespace-nowrap mt-1 leading-none">
-                    {branding?.brandSubtitle || 'Soluções em Tecnologia'}
-                  </span>
-                </div>
-              </>
+              <ServoTechLogo className="h-9 sm:h-11 md:h-12 w-auto max-w-[210px] sm:max-w-[240px] group-hover:opacity-95 group-hover:scale-105 transition-all" />
             )}
           </button>
 

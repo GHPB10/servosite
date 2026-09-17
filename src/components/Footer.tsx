@@ -3,6 +3,7 @@ import { BrandingConfig } from '../types/branding';
 import { COMPANY_INFO, NAV_ITEMS } from '../data/content';
 import { EditableText } from './EditableText';
 import { ServoTechLogoIcon } from './ServoTechLogoIcon';
+import { ServoTechLogo } from './ServoTechLogo';
 import { 
   Mail, 
   Phone, 
@@ -40,43 +41,16 @@ export function Footer({
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
           {/* Brand Col */}
           <div className="lg:col-span-2 space-y-4">
-            <div className="flex items-center gap-3">
+            {/* Brand Logo Oficial */}
+            <div className="flex items-center">
               {branding?.logoType === 'image' && branding?.logoImageUrl ? (
-                <div>
-                  <img
-                    src={branding.logoImageUrl}
-                    alt={branding.brandNamePrefix ? `${branding.brandNamePrefix} ${branding.brandNameSuffix || ''}` : 'Logo'}
-                    className="h-10 max-h-12 max-w-[200px] object-contain"
-                  />
-                  {branding.brandSubtitle && (
-                    <span className="text-[11px] text-sky-400 font-semibold tracking-wide block mt-1">
-                      {branding.brandSubtitle}
-                    </span>
-                  )}
-                </div>
+                <img
+                  src={branding.logoImageUrl}
+                  alt={branding.brandNamePrefix ? `${branding.brandNamePrefix} ${branding.brandNameSuffix || ''}` : 'Logo'}
+                  className="h-11 sm:h-13 max-h-16 max-w-[220px] object-contain"
+                />
               ) : (
-                <>
-                  {branding?.logoImageUrl ? (
-                    <div className="w-10 h-10 rounded-xl overflow-hidden shadow-md shadow-sky-500/20 shrink-0">
-                      <img src={branding.logoImageUrl} alt="Ícone da Marca" className="w-full h-full object-cover" />
-                    </div>
-                  ) : (
-                    <ServoTechLogoIcon className="w-10 h-10" />
-                  )}
-                  <div>
-                    <span className="text-xl sm:text-2xl font-black tracking-tight text-white block leading-none">
-                      {branding?.brandNamePrefix || 'SERVO'}
-                      <span className="text-sky-400">{branding?.brandNameSuffix !== undefined ? branding.brandNameSuffix : 'TECH'}</span>
-                    </span>
-                    <span className="text-[11px] text-sky-400 font-semibold tracking-wide block mt-1">
-                      <EditableText 
-                        contentKey="footer_brand_subtitle" 
-                        defaultText={branding?.brandSubtitle || 'Soluções em Tecnologia'} 
-                        className="text-sky-400 font-semibold" 
-                      />
-                    </span>
-                  </div>
-                </>
+                <ServoTechLogo className="h-11 sm:h-13 w-auto max-w-[220px] sm:max-w-[250px]" />
               )}
             </div>
 
