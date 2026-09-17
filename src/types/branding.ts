@@ -1,3 +1,5 @@
+import { SERVO_TECH_FAVICON_DATA_URI } from '../components/ServoTechLogoIcon';
+
 export interface BrandingConfig {
   logoType: 'icon' | 'image';
   logoImageUrl: string;
@@ -7,23 +9,7 @@ export interface BrandingConfig {
   faviconUrl: string;
 }
 
-export const DEFAULT_FAVICON_SVG = `data:image/svg+xml,${encodeURIComponent(`
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <defs>
-    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#38bdf8"/>
-      <stop offset="50%" stop-color="#0284c7"/>
-      <stop offset="100%" stop-color="#1d4ed8"/>
-    </linearGradient>
-  </defs>
-  <rect width="64" height="64" rx="18" fill="url(#g)"/>
-  <g fill="none" stroke="#ffffff" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M32 16L12 25l20 9 20-9-20-9z"/>
-    <path d="M12 36l20 9 20-9"/>
-    <path d="M12 47l20 9 20-9"/>
-  </g>
-</svg>
-`)}`;
+export const DEFAULT_FAVICON_SVG = SERVO_TECH_FAVICON_DATA_URI;
 
 export const DEFAULT_BRANDING: BrandingConfig = {
   logoType: 'icon',

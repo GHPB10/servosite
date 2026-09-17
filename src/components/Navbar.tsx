@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { PageId } from '../types';
 import { BrandingConfig } from '../types/branding';
 import { COMPANY_INFO } from '../data/content';
+import { ServoTechLogoIcon } from './ServoTechLogoIcon';
 import { 
   Menu, 
   X, 
@@ -198,29 +199,27 @@ export function Navbar({
                   className="h-10 max-h-11 max-w-[200px] object-contain group-hover:scale-105 transition-transform shrink-0" 
                 />
                 {branding.brandSubtitle && (
-                  <span className="hidden sm:inline-block text-[10px] text-slate-400 font-semibold tracking-wider uppercase whitespace-nowrap">
+                  <span className="hidden sm:inline-block text-[11px] text-sky-400 font-semibold tracking-wide whitespace-nowrap">
                     {branding.brandSubtitle}
                   </span>
                 )}
               </div>
             ) : (
               <>
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-sky-400 via-sky-500 to-blue-600 flex items-center justify-center text-white shadow-md shadow-sky-500/25 group-hover:scale-105 transition-transform shrink-0 overflow-hidden">
-                  {branding?.logoImageUrl ? (
+                {branding?.logoImageUrl ? (
+                  <div className="w-10 h-10 rounded-xl overflow-hidden shadow-md shadow-sky-500/25 group-hover:scale-105 transition-transform shrink-0">
                     <img src={branding.logoImageUrl} alt="Ícone da Marca" className="w-full h-full object-cover" />
-                  ) : (
-                    <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5 stroke-current stroke-2">
-                      <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-                    </svg>
-                  )}
-                </div>
+                  </div>
+                ) : (
+                  <ServoTechLogoIcon className="w-10 h-10 group-hover:scale-105 transition-transform" />
+                )}
                 <div className="flex flex-col justify-center min-w-0">
-                  <span className="text-xl font-black tracking-tight text-white group-hover:text-sky-400 transition-colors leading-none whitespace-nowrap">
+                  <span className="text-xl sm:text-2xl font-black tracking-tight text-white group-hover:text-sky-400 transition-colors leading-none whitespace-nowrap">
                     {branding?.brandNamePrefix || 'SERVO'}
                     <span className="text-sky-400">{branding?.brandNameSuffix !== undefined ? branding.brandNameSuffix : 'TECH'}</span>
                   </span>
-                  <span className="text-[10px] text-slate-400 font-semibold tracking-wider uppercase whitespace-nowrap mt-1 leading-none">
-                    {branding?.brandSubtitle || COMPANY_INFO.subtitle}
+                  <span className="text-[11px] text-sky-400 font-semibold tracking-wide whitespace-nowrap mt-1 leading-none">
+                    {branding?.brandSubtitle || 'Soluções em Tecnologia'}
                   </span>
                 </div>
               </>

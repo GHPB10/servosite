@@ -2,6 +2,7 @@ import { PageId } from '../types';
 import { BrandingConfig } from '../types/branding';
 import { COMPANY_INFO, NAV_ITEMS } from '../data/content';
 import { EditableText } from './EditableText';
+import { ServoTechLogoIcon } from './ServoTechLogoIcon';
 import { 
   Mail, 
   Phone, 
@@ -55,24 +56,22 @@ export function Footer({
                 </div>
               ) : (
                 <>
-                  <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-sky-400 to-blue-700 flex items-center justify-center text-white shadow-md shadow-sky-500/20 shrink-0 overflow-hidden">
-                    {branding?.logoImageUrl ? (
+                  {branding?.logoImageUrl ? (
+                    <div className="w-10 h-10 rounded-xl overflow-hidden shadow-md shadow-sky-500/20 shrink-0">
                       <img src={branding.logoImageUrl} alt="Ícone da Marca" className="w-full h-full object-cover" />
-                    ) : (
-                      <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5 stroke-current stroke-2">
-                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-                      </svg>
-                    )}
-                  </div>
+                    </div>
+                  ) : (
+                    <ServoTechLogoIcon className="w-10 h-10" />
+                  )}
                   <div>
-                    <span className="text-xl font-extrabold tracking-tight text-white block">
+                    <span className="text-xl sm:text-2xl font-black tracking-tight text-white block leading-none">
                       {branding?.brandNamePrefix || 'SERVO'}
                       <span className="text-sky-400">{branding?.brandNameSuffix !== undefined ? branding.brandNameSuffix : 'TECH'}</span>
                     </span>
-                    <span className="text-[11px] text-sky-400 font-semibold tracking-wide">
+                    <span className="text-[11px] text-sky-400 font-semibold tracking-wide block mt-1">
                       <EditableText 
                         contentKey="footer_brand_subtitle" 
-                        defaultText={branding?.brandSubtitle || COMPANY_INFO.subtitle} 
+                        defaultText={branding?.brandSubtitle || 'Soluções em Tecnologia'} 
                         className="text-sky-400 font-semibold" 
                       />
                     </span>
