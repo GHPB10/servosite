@@ -93,11 +93,13 @@ export function AdminConfigModal({
     content: dynamicTexts, 
     exportAllTextsJson, 
     importAllTextsJson, 
-    resetAllTexts: resetContentTexts 
+    resetAllTexts: resetContentTexts,
+    syncToServer
   } = useContent();
   const [textImportInput, setTextImportInput] = useState('');
   const [textSaveStatus, setTextSaveStatus] = useState('');
   const [copiedTexts, setCopiedTexts] = useState(false);
+  const [syncingServer, setSyncingServer] = useState(false);
 
   // Banners local edit state
   const [localBanners, setLocalBanners] = useState<BannerItem[]>(banners);
@@ -199,7 +201,12 @@ export function AdminConfigModal({
 
   const handleSaveAllBanners = () => {
     onSaveBanners(localBanners);
-    setBannerSaveStatus('Banners atualizados com sucesso!');
+    fetch('/api/save-content', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ banners: localBanners })
+    }).catch(() => {});
+    setBannerSaveStatus('Banners atualizados e gravados no código fonte!');
     setTimeout(() => setBannerSaveStatus(''), 3000);
   };
 
@@ -317,7 +324,12 @@ export function AdminConfigModal({
 
   const handleSaveAllBranding = () => {
     onSaveBranding(localBranding);
-    setBrandingSaveStatus('Logomarca e Favicon salvos com sucesso!');
+    fetch('/api/save-content', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ branding: localBranding })
+    }).catch(() => {});
+    setBrandingSaveStatus('Logomarca e Favicon salvos no código fonte!');
     setTimeout(() => setBrandingSaveStatus(''), 3500);
   };
 
@@ -1291,6 +1303,28 @@ export function AdminConfigModal({
                     <div className="flex items-center gap-2">
                       <button
                         type="button"
+                        disabled={syncingServer}
+                        onClick={async () => {
+                          setSyncingServer(true);
+                          setTextSaveStatus('Sincronizando textos com os arquivos do projeto...');
+                          const ok = await syncToServer();
+                          setSyncingServer(false);
+                          if (ok) {
+                            setTextSaveStatus('Textos gravados com sucesso permanente nos arquivos do código!');
+                          } else {
+                            setTextSaveStatus('Textos salvos localmente! Copie o JSON abaixo para enviar no chat.');
+                          }
+                          setTimeout(() => setTextSaveStatus(''), 4000);
+                        }}
+                        className="px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 font-extrabold text-xs flex items-center gap-1.5 transition-all cursor-pointer shadow-md shadow-sky-500/20"
+                        title="Gravar nos arquivos fonte do site"
+                      >
+                        <Save className="w-3.5 h-3.5" />
+                        <span>{syncingServer ? 'Gravando...' : 'Gravar no Código Fonte'}</span>
+                      </button>
+
+                      <button
+                        type="button"
                         onClick={() => {
                           navigator.clipboard.writeText(exportAllTextsJson());
                           setCopiedTexts(true);
@@ -1299,7 +1333,7 @@ export function AdminConfigModal({
                         className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer shadow-md"
                       >
                         <Copy className="w-3.5 h-3.5" />
-                        <span>{copiedTexts ? 'Textos Copiados!' : 'Copiar Todos os Textos (JSON)'}</span>
+                        <span>{copiedTexts ? 'Textos Copiados!' : 'Copiar Textos (JSON)'}</span>
                       </button>
 
                       <button

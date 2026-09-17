@@ -30,12 +30,12 @@ export function FloatingEditBar({ onOpenAdminLogin }: FloatingEditBarProps) {
     return null;
   }
 
-  const handleSaveClick = () => {
-    saveAllTexts();
+  const handleSaveClick = async () => {
+    await saveAllTexts();
     setShowSavedFeedback(true);
     setTimeout(() => {
       setShowSavedFeedback(false);
-    }, 2500);
+    }, 3000);
   };
 
   const handleCopyJson = () => {

@@ -17,6 +17,7 @@ interface ContentContextType {
   resetAllTexts: () => void;
   exportAllTextsJson: () => string;
   importAllTextsJson: (jsonStr: string) => boolean;
+  syncToServer: (customContent?: ContentDictionary) => Promise<boolean>;
 }
 
 const STORAGE_KEY = 'servotech_site_content_v1';
@@ -53,6 +54,32 @@ export function ContentProvider({ children }: { children: React.ReactNode }) {
     return () => window.removeEventListener('storage', handleStorage);
   }, []);
 
+  // Automatically sync local changes to server/codebase on boot
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      const savedBanners = localStorage.getItem('servotech_banners');
+      const savedBranding = localStorage.getItem('servotech_branding');
+      if (saved || savedBanners || savedBranding) {
+        const payload: any = {};
+        if (saved) {
+          try { payload.content = JSON.parse(saved); } catch (e) {}
+        }
+        if (savedBanners) {
+          try { payload.banners = JSON.parse(savedBanners); } catch (e) {}
+        }
+        if (savedBranding) {
+          try { payload.branding = JSON.parse(savedBranding); } catch (e) {}
+        }
+        fetch('/api/save-content', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        }).catch(() => {});
+      }
+    } catch (e) {}
+  }, []);
+
   const getText = (key: string, defaultValue: string): string => {
     return content[key] !== undefined ? content[key] : defaultValue;
   };
@@ -65,9 +92,24 @@ export function ContentProvider({ children }: { children: React.ReactNode }) {
     setHasUnsavedChanges(true);
   };
 
-  const saveAllTexts = () => {
+  const syncToServer = async (customContent?: ContentDictionary) => {
+    const target = customContent || content;
+    try {
+      const res = await fetch('/api/save-content', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: target })
+      });
+      return res.ok;
+    } catch (err) {
+      return false;
+    }
+  };
+
+  const saveAllTexts = async () => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(content));
     setHasUnsavedChanges(false);
+    await syncToServer(content);
   };
 
   const resetAllTexts = () => {
@@ -112,6 +154,7 @@ export function ContentProvider({ children }: { children: React.ReactNode }) {
         resetAllTexts,
         exportAllTextsJson,
         importAllTextsJson,
+        syncToServer,
       }}
     >
       {children}
