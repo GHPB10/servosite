@@ -9,10 +9,13 @@ interface ContentContextType {
   isAdmin: boolean;
   setIsAdmin: (val: boolean) => void;
   hasUnsavedChanges: boolean;
+  content: ContentDictionary;
   getText: (key: string, defaultValue: string) => string;
   updateText: (key: string, value: string) => void;
   saveAllTexts: () => void;
   resetAllTexts: () => void;
+  exportAllTextsJson: () => string;
+  importAllTextsJson: (jsonStr: string) => boolean;
 }
 
 const STORAGE_KEY = 'servotech_site_content_v1';
@@ -73,6 +76,25 @@ export function ContentProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const exportAllTextsJson = (): string => {
+    return JSON.stringify(content, null, 2);
+  };
+
+  const importAllTextsJson = (jsonStr: string): boolean => {
+    try {
+      const parsed = JSON.parse(jsonStr);
+      if (typeof parsed === 'object' && parsed !== null) {
+        setContent(parsed);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed));
+        setHasUnsavedChanges(false);
+        return true;
+      }
+    } catch (e) {
+      console.error('Falha ao importar JSON de textos:', e);
+    }
+    return false;
+  };
+
   return (
     <ContentContext.Provider
       value={{
@@ -81,10 +103,13 @@ export function ContentProvider({ children }: { children: React.ReactNode }) {
         isAdmin,
         setIsAdmin,
         hasUnsavedChanges,
+        content,
         getText,
         updateText,
         saveAllTexts,
         resetAllTexts,
+        exportAllTextsJson,
+        importAllTextsJson,
       }}
     >
       {children}

@@ -34,6 +34,7 @@ import {
   Type
 } from 'lucide-react';
 import { BannerItem, INITIAL_BANNERS } from '../types/banner';
+import { useContent } from '../context/ContentContext';
 import { 
   APPS_SCRIPT_TEMPLATE, 
   sendLeadViaWebhook, 
@@ -84,8 +85,19 @@ export function AdminConfigModal({
   const [passwordInput, setPasswordInput] = useState('');
   const [authError, setAuthError] = useState('');
 
-  // Active Tab: 'banners' | 'sheets' | 'branding'
-  const [activeTab, setActiveTab] = useState<'banners' | 'sheets' | 'branding'>('banners');
+  // Active Tab: 'banners' | 'sheets' | 'branding' | 'texts'
+  const [activeTab, setActiveTab] = useState<'banners' | 'sheets' | 'branding' | 'texts'>('banners');
+
+  // Content Context for text management
+  const { 
+    content: dynamicTexts, 
+    exportAllTextsJson, 
+    importAllTextsJson, 
+    resetAllTexts: resetContentTexts 
+  } = useContent();
+  const [textImportInput, setTextImportInput] = useState('');
+  const [textSaveStatus, setTextSaveStatus] = useState('');
+  const [copiedTexts, setCopiedTexts] = useState(false);
 
   // Banners local edit state
   const [localBanners, setLocalBanners] = useState<BannerItem[]>(banners);
@@ -465,6 +477,19 @@ export function AdminConfigModal({
               >
                 <Palette className="w-4 h-4" />
                 <span>Logomarca & Favicon</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setActiveTab('texts')}
+                className={`px-4 py-2.5 text-xs font-bold border-b-2 flex items-center gap-2 transition-all cursor-pointer whitespace-nowrap ${
+                  activeTab === 'texts'
+                    ? 'border-amber-400 text-amber-300'
+                    : 'border-transparent text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                <Type className="w-4 h-4" />
+                <span>Textos do Site ({Object.keys(dynamicTexts).length})</span>
               </button>
             </div>
 
@@ -1234,7 +1259,112 @@ export function AdminConfigModal({
               </div>
             )}
 
-            {/* Modal Bottom Footer */}
+            {/* TAB 4: TEXTS & CONTENT MANAGEMENT */}
+            {activeTab === 'texts' && (
+              <div className="p-6 space-y-6 max-h-[70vh] overflow-y-auto">
+                <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-xs text-amber-300 space-y-1">
+                  <div className="flex items-center gap-2 font-bold text-white">
+                    <Type className="w-4 h-4 text-amber-400" />
+                    <span>Sincronizador de Textos Editados do Site</span>
+                  </div>
+                  <p className="text-slate-300 text-[11px] leading-relaxed">
+                    Você pode exportar todos os textos que foram personalizados pelo modo de edição visual, copiar para colar no chat para gravar no código fonte permanente, ou importar em outro navegador.
+                  </p>
+                </div>
+
+                {textSaveStatus && (
+                  <div className="p-3 rounded-xl text-xs bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4" />
+                    <span>{textSaveStatus}</span>
+                  </div>
+                )}
+
+                <div className="bg-slate-950 border border-slate-800 rounded-2xl p-5 space-y-4">
+                  <div className="flex items-center justify-between border-b border-slate-800 pb-3 flex-wrap gap-2">
+                    <div className="flex items-center gap-2">
+                      <Sparkles className="w-4 h-4 text-amber-400" />
+                      <h4 className="text-xs font-bold text-white uppercase tracking-wider">
+                        Exportar Textos Editados ({Object.keys(dynamicTexts).length} itens modificados)
+                      </h4>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          navigator.clipboard.writeText(exportAllTextsJson());
+                          setCopiedTexts(true);
+                          setTimeout(() => setCopiedTexts(false), 3000);
+                        }}
+                        className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer shadow-md"
+                      >
+                        <Copy className="w-3.5 h-3.5" />
+                        <span>{copiedTexts ? 'Textos Copiados!' : 'Copiar Todos os Textos (JSON)'}</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (confirm('Deseja restaurar todos os textos do site para os valores de fábrica?')) {
+                            resetContentTexts();
+                            setTextSaveStatus('Textos restaurados para os padrões originais!');
+                            setTimeout(() => setTextSaveStatus(''), 3000);
+                          }
+                        }}
+                        className="px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 hover:border-slate-600 text-slate-400 hover:text-white text-xs font-semibold cursor-pointer"
+                        title="Restaurar textos de fábrica"
+                      >
+                        <RotateCcw className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-slate-300 mb-1.5">
+                      Visualização do Dicionário de Textos (JSON)
+                    </label>
+                    <textarea
+                      readOnly
+                      value={exportAllTextsJson()}
+                      rows={6}
+                      className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs font-mono text-amber-200 focus:outline-none"
+                    />
+                  </div>
+
+                  {/* Import section */}
+                  <div className="pt-3 border-t border-slate-800 space-y-3">
+                    <label className="block text-xs font-bold text-white flex items-center gap-2">
+                      <Upload className="w-4 h-4 text-sky-400" />
+                      <span>Importar Textos de outro Navegador</span>
+                    </label>
+                    <textarea
+                      value={textImportInput}
+                      onChange={(e) => setTextImportInput(e.target.value)}
+                      placeholder='Cole aqui o JSON copiado de outro navegador...'
+                      rows={3}
+                      className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs font-mono text-slate-200 focus:outline-none focus:border-sky-500"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const ok = importAllTextsJson(textImportInput);
+                        if (ok) {
+                          setTextImportInput('');
+                          setTextSaveStatus('Textos importados e aplicados com sucesso!');
+                          setTimeout(() => setTextSaveStatus(''), 3000);
+                        } else {
+                          alert('Formato JSON inválido. Verifique o conteúdo colado.');
+                        }
+                      }}
+                      disabled={!textImportInput.trim()}
+                      className="px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-xs disabled:opacity-40 cursor-pointer"
+                    >
+                      Aplicar JSON no Site
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
             <div className="p-4 bg-slate-950 border-t border-slate-800 flex items-center justify-between">
               <span className="text-xs text-slate-400">
                 Logado como: <strong className="text-sky-400">{MASTER_EMAIL}</strong>
