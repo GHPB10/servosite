@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import defaultSiteContent from '../data/siteContent.json';
 
 // Key-value dictionary for dynamic inline text throughout the site
 export type ContentDictionary = Record<string, string>;
@@ -31,15 +32,16 @@ export function ContentProvider({ children }: { children: React.ReactNode }) {
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
   const [content, setContent] = useState<ContentDictionary>(() => {
+    const baseContent: ContentDictionary = { ...(defaultSiteContent as ContentDictionary) };
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
-        return JSON.parse(saved);
+        return { ...baseContent, ...JSON.parse(saved) };
       }
     } catch (err) {
       console.error('Erro ao ler conteúdo salvo:', err);
     }
-    return {};
+    return baseContent;
   });
 
   // Keep admin state synced with localStorage
