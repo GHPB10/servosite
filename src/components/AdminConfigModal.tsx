@@ -1350,7 +1350,7 @@ export function AdminConfigModal({
                             }}
                           />
                           <span className="text-xs text-slate-200 font-medium truncate">
-                            Servo Tech — BPO Financeiro & Softwares
+                            Servo Tech
                           </span>
                           <span className="text-slate-500 text-xs ml-auto pl-2">×</span>
                         </div>
